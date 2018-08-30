@@ -11,13 +11,52 @@
 |
 */
 
+
+// Models:
+
+// invoice
+// receiver
+// issuer
+// item
+// payment
+// bank_detail
+// contact_info
+
+// app (OAUTH 2.0)
+// user (IDConnect | Laravel Auth)
+
+
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-$router->get('/bum', function () use ($router) {
-    return 'shakalaka bum bum';
-});
+
+//CRUDS for each model
+
+//invoice
+//GET PDF
+
+//receiver
+//search
+
+//issuer
+//search
+
+//item
+//search
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
