@@ -36,6 +36,8 @@ $router->get('/', function () use ($router) {
 //invoice
 //GET PDF
 
+$router->post('/generate_invoice_pdf', 'InvoiceController@generate_invoice_pdf');
+
 //receiver
 //search
 

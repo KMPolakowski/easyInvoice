@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\easyInvoice;
+namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -12,9 +12,16 @@ class InvoiceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
     public function index()
     {
-        //
+    
+    }
+
+    public function generate_invoice_pdf()
+    {
+        require_once('../App/Classes/GenerateInvoicePdf.php');
+        generateInvoicePdf('foo');
     }
 
     /**
