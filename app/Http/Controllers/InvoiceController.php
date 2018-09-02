@@ -18,10 +18,10 @@ class InvoiceController extends Controller
     
     }
 
-    public function generate_invoice_pdf()
+    public function generate_invoice_pdf(Request $request)
     {
         require_once('../App/Classes/GenerateInvoicePdf.php');
-        generateInvoicePdf('foo');
+        generateInvoicePdf($request->invoice);
     }
 
     /**

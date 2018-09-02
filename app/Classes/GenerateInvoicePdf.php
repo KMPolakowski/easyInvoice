@@ -4,8 +4,22 @@
 include('tcpdf/tcpdf.php');
 
 
-	function generateInvoicePdf($invoiceValues)
+	function generateInvoicePdf($invoice)
 	{
+
+	$receiver = $invoice["receiver"];
+
+	$details = $invoice["details"];
+
+	$items = $invoice["items"];
+
+	$info = $invoice["info"];
+
+	$payment = $invoice["payment"];
+
+	$bank = $invoice["bank"];
+
+	$contact = $invoice["contact"];
 	
 	// create new PDF document
 	$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -18,7 +32,9 @@ include('tcpdf/tcpdf.php');
 	$pdf->SetKeywords('TCPDF, PDF, example, test, guide');
 	
 	// set default header data
-	$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, "Janbau e. U.", "Jan Polakowski\nThürnlhofstrasse 5/8/827\n1110 Wien\nUIDNr.: 21564561321561\n", array(0,64,255), array(255, 255, 255));
+	$pdf->SetHeaderData('https://www.janbau.at/img/FirmenlogoJanbau.jpg', 60, "Janbau e. U.",
+	"Jan Polakowski\nThürnlhofstrasse 5/8/827\n1110 Wien\n                                    
+	UIDNr.: 21564561321561\n", array(0,64,255), array(255, 255, 255));
 
 	$pdf->setFooterData(array(0,64,0), array(0,64,128));
 	
@@ -65,7 +81,10 @@ include('tcpdf/tcpdf.php');
 	$pdf->setTextShadow(array('enabled'=>true, 'depth_w'=>0.2, 'depth_h'=>0.2, 'color'=>array(196,196,196), 'opacity'=>1, 'blend_mode'=>'Normal'));
 	
 	// Set some content to print
-	$html = file_get_contents(__DIR__.'\invoice.html');
+	ob_start();
+	include(__DIR__.'\invoice.php');
+	$html = ob_get_contents();
+	ob_end_clean();
 	
 	// Print text using writeHTMLCell()
 	$pdf->writeHTMLCell(0, 0, '', '', $html, 0, 1, 0, true, '', true);
@@ -79,8 +98,7 @@ include('tcpdf/tcpdf.php');
 	
 	//============================================================
 	// END OF FILE
-	//============================================================
-	
+	//============================================================	
 
 	}
 
