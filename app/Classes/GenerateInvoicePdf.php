@@ -35,7 +35,7 @@ include('tcpdf/tcpdf.php');
 	$pdf->SetHeaderData('https://www.janbau.at/img/FirmenlogoJanbau.jpg', 60, "Janbau e. U.",
 	"Jan Polakowski\nThürnlhofstrasse 5/8/827\n1110 Wien\n                                    
 	UIDNr.: 21564561321561\n", array(0,64,255), array(255, 255, 255));
-
+	
 	$pdf->setFooterData(array(0,64,0), array(0,64,128));
 	
 	// set header and footer fonts
@@ -98,7 +98,7 @@ include('tcpdf/tcpdf.php');
 	
 	//============================================================
 	// END OF FILE
-	//============================================================	
+	//============================================================
 
 	}
 

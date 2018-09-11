@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateBankDetailsTable extends Migration
+class CreateBankDetailTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,7 +15,10 @@ class CreateBankDetailsTable extends Migration
     {
         Schema::create('bank_detail', function (Blueprint $table) {
             $table->increments('id');
-            $table->timestamps();
+            $table->integer('invoice_id');
+            $table->string('bank');
+            $table->string('bic');
+            $table->string('iban');
         });
     }
 

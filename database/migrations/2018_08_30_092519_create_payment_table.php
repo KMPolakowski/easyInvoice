@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePaymentsTable extends Migration
+class CreatePaymentTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,6 +15,10 @@ class CreatePaymentsTable extends Migration
     {
         Schema::create('payment', function (Blueprint $table) {
             $table->increments('id');
+            $table->smallInteger('days');
+            $table->boolean('has_skonto');
+            $table->integer('days_skonto')->nullable();
+            $table->integer('percent_skonto')->nullable();
             $table->timestamps();
         });
     }

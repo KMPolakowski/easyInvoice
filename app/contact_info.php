@@ -1,6 +1,6 @@
 <?php
 
-namespace App\easyInvoice;
+namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 

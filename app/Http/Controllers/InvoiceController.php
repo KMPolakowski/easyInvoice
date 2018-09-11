@@ -1,9 +1,13 @@
 <?php
 
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+
+use App\Invoice;
+use App\Bank_detail;
 
 class InvoiceController extends Controller
 {
@@ -15,7 +19,6 @@ class InvoiceController extends Controller
 
     public function index()
     {
-    
     }
 
     public function generate_invoice_pdf(Request $request)

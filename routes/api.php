@@ -25,6 +25,7 @@
 // app (OAUTH 2.0)
 // user (IDConnect | Laravel Auth)
 
+//feature: send per email
 
 $router->get('/', function () use ($router) {
     return $router->app->version();
@@ -37,6 +38,7 @@ $router->get('/', function () use ($router) {
 //GET PDF
 
 $router->post('/generate_invoice_pdf', 'InvoiceController@generate_invoice_pdf');
+$router->get('/invoice', 'InvoiceController@index');
 
 //receiver
 //search
@@ -46,19 +48,3 @@ $router->post('/generate_invoice_pdf', 'InvoiceController@generate_invoice_pdf')
 
 //item
 //search
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

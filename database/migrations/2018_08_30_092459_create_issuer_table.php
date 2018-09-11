@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateIssuersTable extends Migration
+class CreateIssuerTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,6 +15,11 @@ class CreateIssuersTable extends Migration
     {
         Schema::create('issuer', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('name');
+            $table->string('street');
+            $table->string('zip_code');
+            $table->string('house_number');
+            $table->string('vat_number');
             $table->timestamps();
         });
     }
