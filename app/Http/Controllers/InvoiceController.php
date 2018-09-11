@@ -17,8 +17,11 @@ class InvoiceController extends Controller
      * @return \Illuminate\Http\Response
      */
 
+    private $userId = 7;
+
     public function index()
     {
+        $user = User::find($this->userId);
     }
 
     public function generate_invoice_pdf(Request $request)

@@ -11,9 +11,20 @@
 |
 */
 
-$factory->define(App\User::class, function (Faker\Generator $faker) {
+use Faker\Generator as Faker;
+
+$factory->define(App\Invoice::class, function (Faker $faker) {
     return [
-        'name' => $faker->name,
-        'email' => $faker->email,
+        'date' => $faker->date,
+        'number' => $faker->numberBetween(0, 500),
+        'topic' => $faker->text(60),
+        'street' => $faker->streetName,
+        'zip_code' => $faker->postcode,
+        'house_number' => $faker->buildingNumber,
+        'netto_sum' => $faker->numberBetween(350, 100000),
+        'vat_percentage' => $faker->numberBetween(13, 20),
+        'vat_sum' => $faker->numberBetween(50, 20000),
+        'brutto_sum'=>  $faker->numberBetween(400, 120000),
+        'user_id' => $faker->numberBetween(1, 10)
     ];
 });

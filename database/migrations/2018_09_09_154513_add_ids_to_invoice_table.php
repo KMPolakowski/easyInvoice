@@ -14,12 +14,13 @@ class AddIdsToInvoiceTable extends Migration
     public function up()
     {
         Schema::table('invoice', function (Blueprint $table) {
-            $table->integer('receiver_id');
-            $table->integer('issuer_id');
-            $table->string('item_id');
-            $table->integer('payment_id');
-            $table->integer('bank_detail_id');
-            $table->integer('contact_info_id');
+            $table->integer('receiver_id')->nullable();
+            $table->integer('issuer_id')->nullable();
+            $table->string('item_id')->nullable();
+            $table->integer('payment_id')->nullable();
+            $table->integer('bank_detail_id')->nullable();
+            $table->integer('contact_info_id')->nullable();
+            $table->integer('user_id')->nullable();
         });
     }
 

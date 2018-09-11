@@ -12,9 +12,11 @@ class BankDetailController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    private $testUser = 17;
+
     public function index()
     {
-        //
     }
 
     /**
