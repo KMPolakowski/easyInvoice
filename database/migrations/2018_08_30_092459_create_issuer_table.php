@@ -20,6 +20,8 @@ class CreateIssuerTable extends Migration
             $table->string('zip_code');
             $table->string('house_number');
             $table->string('vat_number');
+            $table->integer('invoice_id');
+            $table->integer('user_id');
             $table->timestamps();
         });
     }

@@ -20,6 +20,8 @@ class CreateItemTable extends Migration
             $table->float('quantity');
             $table->float('price');
             $table->float('amount');
+            $table->integer('invoice_id');
+            $table->integer('user_id');
             $table->timestamps();
         });
     }

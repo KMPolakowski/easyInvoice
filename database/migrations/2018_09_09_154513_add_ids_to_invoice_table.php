@@ -16,7 +16,6 @@ class AddIdsToInvoiceTable extends Migration
         Schema::table('invoice', function (Blueprint $table) {
             $table->integer('receiver_id')->nullable();
             $table->integer('issuer_id')->nullable();
-            $table->string('item_id')->nullable();
             $table->integer('payment_id')->nullable();
             $table->integer('bank_detail_id')->nullable();
             $table->integer('contact_info_id')->nullable();

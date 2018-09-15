@@ -22,6 +22,8 @@ class CreateContactInfoTable extends Migration
             $table->string('house_number')->nullable();
             $table->string('web')->nullable();
             $table->timestamps();
+            $table->integer('invoice_id');
+            $table->integer('user_id');
         });
     }
 

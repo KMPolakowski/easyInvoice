@@ -24,7 +24,14 @@ $factory->define(App\Invoice::class, function (Faker $faker) {
         'netto_sum' => $faker->numberBetween(350, 100000),
         'vat_percentage' => $faker->numberBetween(13, 20),
         'vat_sum' => $faker->numberBetween(50, 20000),
-        'brutto_sum'=>  $faker->numberBetween(400, 120000),
-        'user_id' => $faker->numberBetween(1, 10)
+        'brutto_sum'=>  $faker->numberBetween(400, 120000)
+    ];
+});
+
+$factory->define(App\Bank_detail::class, function (Faker $faker) {
+    return [
+        'bank' => $faker->name,
+        'bic' => $faker->text(6),
+        'iban' => $faker->bankAccountNumber
     ];
 });
