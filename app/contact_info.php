@@ -8,9 +8,14 @@ class contact_info extends Model
 {
     protected $table = 'contact_info';
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     public function Invoice()
+    {
+        return $this->hasMany('App\Invoice');
+    }
+
+    public function User()
     {
         return $this->belongsTo('App\Invoice');
     }

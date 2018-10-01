@@ -19,8 +19,6 @@ class CreatePaymentConditionTable extends Migration
             $table->boolean('has_skonto');
             $table->integer('days_skonto')->nullable();
             $table->integer('percent_skonto')->nullable();
-            $table->integer('invoice_id');
-            $table->integer('user_id');
             $table->timestamps();
         });
     }

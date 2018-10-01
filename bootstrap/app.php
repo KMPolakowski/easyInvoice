@@ -27,6 +27,8 @@ $app->withFacades();
 
 $app->withEloquent();
 
+$app->register(Vluzrmos\Tinker\TinkerServiceProvider::class);
+
 /*
 |--------------------------------------------------------------------------
 | Register Container Bindings

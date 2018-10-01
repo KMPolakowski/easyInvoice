@@ -19,9 +19,7 @@ class CreateReceiverTable extends Migration
             $table->string('street');
             $table->string('zip_code');
             $table->string('house_number');
-            $table->string('vat_num')->nullable();
-            $table->integer('invoice_id');
-            $table->integer('user_id');
+            $table->string('vat_number')->nullable();
             $table->timestamps();
         });
     }

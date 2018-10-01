@@ -8,10 +8,15 @@ class receiver extends Model
 {
     protected $table = 'receiver';
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     public function Invoice()
     {
-        return $this->belongsTo('App\Invoice');
+        return $this->hasMany('App\Invoice');
+    }
+
+    public function User()
+    {
+        return $this->belongsTo('App\User');
     }
 }

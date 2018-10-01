@@ -25,6 +25,7 @@ class CreateInvoiceTable extends Migration
             $table->integer('vat_percentage');
             $table->float('vat_sum');
             $table->float('brutto_sum');
+            $table->boolean("draft");
             $table->timestamps();
         });
     }

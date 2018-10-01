@@ -33,7 +33,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     ];
 
 
-    public function Invoices()
+    public function Invoice()
     {
         return $this->hasMany('App\Invoice');
     }
@@ -53,7 +53,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return $this->hasOne('App\Issuer');
     }
 
-    public function Items()
+    public function Item()
     {
         return $this->hasMany('App\Item');
     }

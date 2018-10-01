@@ -6,12 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Payment_condition extends Model
 {
-    protected $table = 'payment';
+    protected $table = 'payment_condition';
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     public function Invoice()
     {
-        return $this->belongsTo('App\Invoice');
+        return $this->hasMany('App\Invoice');
+    }
+
+    public function User()
+    {
+        return $this->belongsTo('App\User');
     }
 }

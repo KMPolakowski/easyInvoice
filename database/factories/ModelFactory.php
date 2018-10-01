@@ -28,10 +28,8 @@ $factory->define(App\Invoice::class, function (Faker $faker) {
     ];
 });
 
-$factory->define(App\Bank_detail::class, function (Faker $faker) {
+$factory->define(App\User::class, function (Faker $faker) {
     return [
-        'bank' => $faker->name,
-        'bic' => $faker->text(6),
-        'iban' => $faker->bankAccountNumber
+
     ];
 });

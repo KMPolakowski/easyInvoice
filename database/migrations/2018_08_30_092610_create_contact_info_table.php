@@ -17,13 +17,11 @@ class CreateContactInfoTable extends Migration
             $table->increments('id');
             $table->string('tel');
             $table->string('email');
-            $table->string('street')->nullable();
-            $table->string('zip_code')->nullable();
-            $table->string('house_number')->nullable();
+            // $table->string('street')->nullable();
+            // $table->string('zip_code')->nullable();
+            // $table->string('house_number')->nullable();
             $table->string('web')->nullable();
             $table->timestamps();
-            $table->integer('invoice_id');
-            $table->integer('user_id');
         });
     }
 

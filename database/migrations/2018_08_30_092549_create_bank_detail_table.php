@@ -15,11 +15,10 @@ class CreateBankDetailTable extends Migration
     {
         Schema::create('bank_detail', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('invoice_id');
             $table->string('bank');
             $table->string('bic');
             $table->string('iban');
-            $table->integer('user_id');
+            $table->timestamps();
         });
     }
 

@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 
 use App\Invoice;
 use App\Bank_detail;
+use App\User;
 
 class InvoiceController extends Controller
 {
@@ -24,10 +25,16 @@ class InvoiceController extends Controller
         $user = User::find($this->userId);
     }
 
-    public function generate_invoice_pdf(Request $request)
+    public function printPdfInvoice(Request $request)
     {
-        require_once('../App/Classes/GenerateInvoicePdf.php');
-        generateInvoicePdf($request->invoice);
+        $this->validate([
+            "invoice_num" => "num|"
+        ]);
+
+
+        
+
+        return $user->Bank_detail->Invoice;
     }
 
     /**

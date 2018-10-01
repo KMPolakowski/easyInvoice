@@ -10,32 +10,32 @@ class Invoice extends Model
 
     public function Bank_detail()
     {
-        return $this->hasOne('App\Bank_detail');
+        return $this->belongsTo('App\Bank_detail');
     }
 
     public function Contact_info()
     {
-        return $this->hasOne('App\Contact_info');
+        return $this->belongsTo('App\Contact_info');
     }
 
     public function Issuer()
     {
-        return $this->hasOne('App\Issuer');
+        return $this->belongsTo('App\Issuer');
     }
 
-    public function Items()
+    public function Item()
     {
         return $this->hasMany('App\Item');
     }
 
     public function Payment_condition()
     {
-        return $this->hasOne('App\Payment_condition');
+        return $this->belongsTo('App\Payment_condition');
     }
 
     public function Receiver()
     {
-        return $this->hasOne('App\Receiver');
+        return $this->belongsTo('App\Receiver');
     }
 
     public function User()
