@@ -11,6 +11,7 @@
 |
 */
 
+use App\Service\Invoice\PrintInvoiceService;
 
 // Models:
 
@@ -37,7 +38,14 @@ $router->get('/', function () use ($router) {
 //invoice
 //GET PDF
 
-$router->post('/generate_invoice_pdf', 'InvoiceController@generate_invoice_pdf');
+
+// $router->post('/invoice/print', function () {
+//     $print = new PrintInvoiceService();
+// });
+
+$router->post('/invoice/print', 'InvoiceController@printNew');
+$router->get('/invoice/print/{number}', 'InvoiceController@printExisting');
+
 $router->get('/invoices', 'InvoiceController@index');
 
 //receiver

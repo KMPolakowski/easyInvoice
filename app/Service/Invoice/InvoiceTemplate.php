@@ -11,7 +11,7 @@
                                         </tr>
                                         <tr>
                                                 <td>
-                                                <?php echo $receiver["address"] ?>
+                                                <?php echo $receiver["street"] . " " . $receiver["house_number"] ?>
                                                 </td>
 
 
@@ -19,14 +19,17 @@
 
                                         <tr>
                                                 <td>
-                                                <?php echo $receiver["zip_code"] ?>
+                                                <?php echo $receiver["zip_code"];
+?>
                                                 </td>
 
 
                                         </tr>
                                         <tr>
                                                 <td>
-                                                <?php echo $receiver["vat_num"] ?>
+                                                <?php if (isset($receiver["vat_number"])) {
+    echo $receiver["vat_num"];
+} ?>
                                                 </td>
 
                                         </tr>
@@ -82,7 +85,7 @@
                                         </tr>
                                         <tr>
                                                 <td>
-                                                <?php echo $details["address"] ?>
+                                                <?php echo $details["street"] . " " . $details["house_number"] ?>
                                                 </td>
                                         </tr>
 
@@ -128,11 +131,10 @@
                         </th>
                 </tr>
 
-        <?php foreach($items as $item)
-        {
-                echo "<tr>
+        <?php foreach ($items as $item) {
+    echo "<tr>
                         <td>
-                        ".$item["pos"]."
+                        ".$item["pos_num"]."
                         </td>
 
                         <td>
@@ -140,7 +142,7 @@
                         </td>
 
                         <td>
-                        ".$item["number"]." 
+                        ".$item["quantity"]." 
                         </td>
 
                         <td>
@@ -156,8 +158,7 @@
                         </td>
 
                 </tr>";
-
-        }
+}
         ?>
         </table>
 
@@ -200,7 +201,7 @@
                                                 </td>
 
                                                 <td>
-                                                <?php echo $details["end_sum"] ?>
+                                                <?php echo $details["brutto_sum"] ?>
                                                 </td>
                                         </tr>
 
@@ -211,7 +212,14 @@
 
                 <tr>
                         <td>
-                                <h3> Zahlung: <?php echo $payment ?></h3>
+
+                        <h3> Zahlung: <?php
+                                $string = $payment["days"] . " Tage nach Rechnungsdatum netto";
+                                $payment["has_skonto"] ? $string.= ", innerhalb von " . $payment["days_skonto"] . " Tagen " . $payment["percent_skonto"] . "% Skonto." : $string.=".";
+                                echo $string;
+                                ?>
+                        </h3>
+
                         </td>
                 </tr>
 

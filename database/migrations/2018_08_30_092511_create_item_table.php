@@ -21,6 +21,7 @@ class CreateItemTable extends Migration
             $table->float('quantity');
             $table->float('price');
             $table->float('amount');
+            $table->string('me');
             $table->timestamps();
         });
     }

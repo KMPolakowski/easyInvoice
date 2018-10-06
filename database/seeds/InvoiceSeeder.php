@@ -23,6 +23,9 @@ class InvoiceSeeder extends Seeder
 
     public function run()
     {
+        $mes = ["lfm", "m", "m²", "pau", "pa"];
+
+
         $this->faker = Faker\Factory::create('at_AT');
 
         for ($i1 = 0; $i1 < 20; $i1++) {
@@ -64,6 +67,7 @@ class InvoiceSeeder extends Seeder
                 $invoice->house_number = $this->faker->buildingNumber;
                 $invoice->vat_percentage = $this->faker->numberBetween(15, 20);
                 $invoice->draft = 0;
+                $invoice->info = $this->faker->text($this->faker->numberBetween(35, 255));
         
                 
                 $receiver = new Receiver();
@@ -84,6 +88,7 @@ class InvoiceSeeder extends Seeder
                     $item->descr = $this->faker->text($this->faker->numberBetween(15, 65));
                     $item->quantity = $this->faker->numberBetween(1, 15);
                     $item->price = $this->faker->randomFloat(2, 0, 10000);
+                    $item->me = $mes[$this->faker->numberBetween(0, 4)];
                     $netto_sum =+ ($item->amount = round($item->price * $item->quantity, 2));
                     $invoice->Item()->save($item);
                     $user->Item()->save($item);
@@ -91,7 +96,7 @@ class InvoiceSeeder extends Seeder
 
                 $invoice->netto_sum = $netto_sum;
 
-                $vat_sum = $netto_sum * $invoice->vat_percentage;
+                $vat_sum = $netto_sum * ($invoice->vat_percentage / 100);
                 $invoice->vat_sum = $vat_sum;
 
                 $invoice->brutto_sum = $netto_sum + $vat_sum;

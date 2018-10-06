@@ -1,11 +1,16 @@
 <?php
+namespace App\Service\Invoice;
 
 // Include the main TCPDF library (search for installation path).
-include('tcpdf/tcpdf.php');
-
-
-    function generateInvoicePdf($invoice)
+class PrintInvoiceService
+{
+    public function printInvoice($input)
     {
+        require_once('../vendor/TCPDF/tcpdf.php');
+
+        
+        $invoice = $input["invoice"];
+
         $receiver = $invoice["receiver"];
 
         $details = $invoice["details"];
@@ -14,14 +19,14 @@ include('tcpdf/tcpdf.php');
 
         $info = $invoice["info"];
 
-        $payment = $invoice["payment"];
+        $payment = $invoice["payment_condition"];
 
-        $bank = $invoice["bank"];
+        $bank = $invoice["bank_detail"];
 
-        $contact = $invoice["contact"];
+        $contact = $invoice["contact_info"];
     
         // create new PDF document
-        $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf = new \TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
     
         // set document information
         $pdf->SetCreator(PDF_CREATOR);
@@ -35,8 +40,8 @@ include('tcpdf/tcpdf.php');
         'https://www.janbau.at/img/FirmenlogoJanbau.jpg',
         60,
         "Janbau e. U.",
-    "Jan Polakowski\nThürnlhofstrasse 5/8/827\n1110 Wien\n                                    
-	UIDNr.: 21564561321561\n",
+        "Jan Polakowski\nThürnlhofstrasse 5/8/827\n1110 Wien\n                                    
+	    UIDNr.: 21564561321561\n",
         array(0,64,255),
         array(255, 255, 255)
     );
@@ -87,7 +92,7 @@ include('tcpdf/tcpdf.php');
     
         // Set some content to print
         ob_start();
-        include(__DIR__.'\invoice.php');
+        include(__DIR__.'\InvoiceTemplate.php');
         $html = ob_get_contents();
         ob_end_clean();
     
@@ -105,3 +110,4 @@ include('tcpdf/tcpdf.php');
     // END OF FILE
     //============================================================
     }
+}
