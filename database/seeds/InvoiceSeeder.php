@@ -82,14 +82,15 @@ class InvoiceSeeder extends Seeder
     
                 $netto_sum = 0;
 
-                for ($i3 = 1; $i3 < $this->faker->numberBetween(1, 11); $i3++) {
+                for ($i3 = 1; $i3 < $this->faker->numberBetween(2, 11); $i3++) {
                     $item = new Item();
                     $item->pos_num = $i3;
                     $item->descr = $this->faker->text($this->faker->numberBetween(15, 65));
                     $item->quantity = $this->faker->numberBetween(1, 15);
-                    $item->price = $this->faker->randomFloat(2, 0, 10000);
+                    $item->price = $this->faker->randomFloat(2, 0, 1000);
                     $item->me = $mes[$this->faker->numberBetween(0, 4)];
-                    $netto_sum =+ ($item->amount = round($item->price * $item->quantity, 2));
+                    $item->amount = round($item->price * $item->quantity, 2);
+                    $netto_sum += $item->amount;
                     $invoice->Item()->save($item);
                     $user->Item()->save($item);
                 }

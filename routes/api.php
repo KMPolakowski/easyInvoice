@@ -46,6 +46,9 @@ $router->get('/', function () use ($router) {
 $router->post('/invoice/print', 'InvoiceController@printNew');
 $router->get('/invoice/print/{number}', 'InvoiceController@printExisting');
 
+$router->get('/invoice/draft/{number}', 'InvoiceController@makeDraft');
+$router->get('/invoice/finalize/{number}', 'InvoiceController@makeInvoice');
+
 $router->get('/invoices', 'InvoiceController@index');
 
 //receiver

@@ -28,7 +28,7 @@
                                         <tr>
                                                 <td>
                                                 <?php if (isset($receiver["vat_number"])) {
-    echo $receiver["vat_num"];
+    echo $receiver["vat_number"];
 } ?>
                                                 </td>
 

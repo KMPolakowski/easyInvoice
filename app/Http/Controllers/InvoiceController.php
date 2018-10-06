@@ -24,7 +24,7 @@ class InvoiceController extends Controller
         // $this->PrintInvoiceService = new PrintInvoiceService();
     }
 
-    private $userId = 11;
+    private $userId = 3;
     
     /**
      * Returns a pdf invoice based on fields in the request body
@@ -33,44 +33,41 @@ class InvoiceController extends Controller
     {
         $this->validate($request, [
             "invoice.receiver.name" => "required|string|max:255",
-            "invoice.receiver.address" => "required|string|max:128",
+            "invoice.receiver.street" => "required|string|max:128",
+            "invoice.receiver.house_number" => "required|string|max:12",
             "invoice.receiver.zip_code" => "required|string|max:64",
-            "invoice.receiver.vat_num" => "string|max:14",
+            "invoice.receiver.vat_number" => "string|max:14",
 
             "invoice.details.date" => "required|date_format:d-m-Y",
             "invoice.details.number" => "required|numeric",
             "invoice.details.topic" => "required|string|max:64",
-            "invoice.details.address" => "required|string|max:64",
+            "invoice.details.street" => "required|string|max:64",
+            "invoice.details.house_number" => "required|numeric",
             "invoice.details.zip_code" => "required|string|max:64",
             "invoice.details.netto_sum" => "required|numeric",
             "invoice.details.vat_percentage" => "required|integer",
             "invoice.details.vat_sum" => "required|numeric",
-            "invoice.details.end_sum" => "required|numeric",
+            "invoice.details.brutto_sum" => "required|numeric",
 
-            "invoice.items.*.pos" => "required|integer",
+            "invoice.items.*.pos_num" => "required|integer",
             "invoice.items.*.descr" => "required|string",
-            "invoice.items.*.number" => "required|numeric",
-            "invoice.items.*.me" => "required|string|max:3",
-            "invoice.items.*.price" => "required|numeric",
-            "invoice.items.*.amount" => "required|numeric",
-            "invoice.items.*.pos" => "required|integer",
-            "invoice.items.*.descr" => "required|string",
-            "invoice.items.*.number" => "required|numeric",
+            "invoice.items.*.quantity" => "required|numeric",
             "invoice.items.*.me" => "required|string|max:3",
             "invoice.items.*.price" => "required|numeric",
             "invoice.items.*.amount" => "required|numeric",
 
             "invoice.info" => "string",
 
-            "invoice.payment" => "required|string|max:128",
+            "invoice.payment_condition.days" => "required|numeric",
+            "invoice.payment_condition.has_skonto" => "required|boolean",
 
-            "invoice.bank.bank" => "required|string|max:64",
-            "invoice.bank.bic" => "required|string|max:12",
-            "invoice.bank.iban" => "required|string|max:14",
+            "invoice.bank_detail.bank" => "required|string|max:64",
+            "invoice.bank_detail.bic" => "required|string|max:12",
+            "invoice.bank_detail.iban" => "required|string|max:14",
 
-            "invoice.contact.tel" => "required|string|max:32",
-            "invoice.contact.email" => "required|email",
-            "invoice.contact.web" => "string|max:64"
+            "invoice.contact_info.tel" => "required|string|max:32",
+            "invoice.contact_info.email" => "required|email",
+            "invoice.contact_info.web" => "string|max:64"
         ]);
 
         return $printInvoiceService->printInvoice($request->all());
@@ -107,15 +104,59 @@ class InvoiceController extends Controller
     /**
      * Sets certain Invoice as a draft.
      */
-    public function makeDraft(Request $request)
+    public function makeDraft(Request $request, $number)
     {
+        $request["number"] = $number;
+
+        $this->validate($request, [
+            "number" => "required|integer"
+        ]);
+        
+        $user = User::find($this->userId);
+        
+
+        $invoice = $user->Invoice()->where("number", $number)->firstOrFail();
+
+        if ($invoice->draft == 0) {
+            $invoice->draft = 1;
+        
+            if ($invoice->save()) {
+                return $invoice;
+            } else {
+                return "no save";
+            }
+        } else {
+            return "It's already so";
+        }
     }
 
     /**
      * Sets certain Invoice as final verison
      */
-    public function makeInvoice(Request $request)
+    public function makeInvoice(Request $request, $number)
     {
+        $request["number"] = $number;
+
+        $this->validate($request, [
+            "number" => "required|integer"
+        ]);
+        
+        $user = User::find($this->userId);
+        
+
+        $invoice = $user->Invoice()->where("number", $number)->firstOrFail();
+
+        if ($invoice->draft == 1) {
+            $invoice->draft = 0;
+        
+            if ($invoice->save()) {
+                return $invoice;
+            } else {
+                return "no save";
+            }
+        } else {
+            return "It's already so";
+        }
     }
 
     /**
