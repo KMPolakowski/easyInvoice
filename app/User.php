@@ -58,12 +58,12 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return $this->hasMany('App\Item');
     }
 
-    public function Payment_conditions()
+    public function Payment_condition()
     {
         return $this->hasMany('App\Payment_condition');
     }
 
-    public function Receivers()
+    public function Receiver()
     {
         return $this->hasMany('App\Receiver');
     }

@@ -50,17 +50,17 @@ class InvoiceSeeder extends Seeder
             $issuer->zip_code = $this->faker->postCode;
             $issuer->house_number = $this->faker->buildingNumber;
             $issuer->vat_number = $this->faker->vat(false);
-            
 
             $user->Bank_detail()->save($bank_detail);
             $user->Contact_info()->save($contact);
             $user->Issuer()->save($issuer);
 
+
             for ($i2 = 1; $i2 < 21; $i2++) {
                 $invoice = new Invoice();
                 
                 $invoice->date = $this->faker->date;
-                $invoice->number = $i2;
+                // $invoice->number = $i2;
                 $invoice->topic = $this->faker->text($this->faker->numberBetween(8, 15));
                 $invoice->street = $this->faker->streetName;
                 $invoice->zip_code = $this->faker->postCode;
@@ -68,7 +68,8 @@ class InvoiceSeeder extends Seeder
                 $invoice->vat_percentage = $this->faker->numberBetween(15, 20);
                 $invoice->draft = 0;
                 $invoice->info = $this->faker->text($this->faker->numberBetween(35, 255));
-        
+                $user->Invoice()->save($invoice);
+
                 
                 $receiver = new Receiver();
                 $receiver->name = $this->faker->name;
@@ -77,8 +78,8 @@ class InvoiceSeeder extends Seeder
                 $receiver->house_number = $this->faker->buildingNumber;
                 $this->faker->boolean ? $receiver->vat_number = $this->faker->vat(false): $receiver->vat_number = null;
 
-                $receiver->save();
-                $receiver->Invoice()->save($invoice);
+                $user->Receiver()->save($receiver);
+
     
                 $netto_sum = 0;
 
@@ -91,8 +92,8 @@ class InvoiceSeeder extends Seeder
                     $item->me = $mes[$this->faker->numberBetween(0, 4)];
                     $item->amount = round($item->price * $item->quantity, 2);
                     $netto_sum += $item->amount;
-                    $invoice->Item()->save($item);
                     $user->Item()->save($item);
+                    $invoice->Item()->save($item);
                 }
 
                 $invoice->netto_sum = $netto_sum;
@@ -110,14 +111,15 @@ class InvoiceSeeder extends Seeder
                     $payment->days_skonto = round($payment->days/2, 0);
                     $payment->percent_skonto = $this->faker->numberBetween(1, 5);
                 }
-                $payment->save();
+                $user->Payment_condition()->save($payment);
+
 
                 $payment->Invoice()->save($invoice);
                 $receiver->Invoice()->save($invoice);
                 $bank_detail->Invoice()->save($invoice);
                 $contact->Invoice()->save($invoice);
                 $issuer->Invoice()->save($invoice);
-                $user->Invoice()->save($invoice);
+                $receiver->Invoice()->save($invoice);
             }
         }
     }

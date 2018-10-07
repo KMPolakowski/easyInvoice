@@ -24,6 +24,13 @@ class AddUserIdToTables extends Migration
                 Schema::table($table->Tables_in_easyinvoice, function (Blueprint $table) {
                     $table->integer('user_id')->nullable();
                 });
+
+                if ($table->Tables_in_easyinvoice == "invoice") {
+                    \DB::unprepared("CREATE TRIGGER invoice_number
+                BEFORE INSERT ON invoice FOR EACH ROW SET NEW.number =
+                (SELECT IFNULL(MAX(number), 0) FROM invoice WHERE user_id =
+            NEW.user_id) + 1;");
+                }
             }
         }
     }
@@ -39,6 +46,9 @@ class AddUserIdToTables extends Migration
 
         foreach ($tables as $table) {
             if ($table->Tables_in_easyinvoice !== "user") {
+                if ($table->Tables_in_easyinvoice == "invoice") {
+                    \DB::statement("DROP TRIGGER invoice_number");
+                }
                 Schema::table($table->Tables_in_easyinvoice, function (Blueprint $table) {
                     $table->dropColumn("user_id");
                 });

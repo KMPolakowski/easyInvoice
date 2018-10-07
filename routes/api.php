@@ -11,51 +11,26 @@
 |
 */
 
-use App\Service\Invoice\PrintInvoiceService;
-
-// Models:
-
-// invoice
-// receiver
-// issuer
-// item
-// payment
-// bank_detail
-// contact_info
-
-// app (OAUTH 2.0)
-// user (IDConnect | Laravel Auth)
-
-//feature: send per email
-
-$router->get('/', function () use ($router) {
-    return $router->app->version();
-});
-
-
-//CRUDS for each model
-
-//invoice
-//GET PDF
-
-
-// $router->post('/invoice/print', function () {
-//     $print = new PrintInvoiceService();
-// });
+$router->get('/invoices', 'InvoiceController@index');
 
 $router->post('/invoice/print', 'InvoiceController@printNew');
 $router->get('/invoice/print/{number}', 'InvoiceController@printExisting');
 
-$router->get('/invoice/draft/{number}', 'InvoiceController@makeDraft');
-$router->get('/invoice/finalize/{number}', 'InvoiceController@makeInvoice');
+$router->patch('/invoice/draft/{number}', 'InvoiceController@makeDraft');
+$router->patch('/invoice/finalize/{number}', 'InvoiceController@makeInvoice');
 
-$router->get('/invoices', 'InvoiceController@index');
+$router->post('/invoice/create', 'InvoiceController@create');
 
-//receiver
-//search
+$router->put('/invoice/receiver', 'InvoiceController@setReceiverById');
+$router->post('/invoice/receiver', 'InvoiceController@setNewReceiver');
 
-//issuer
-//search
+$router->put('/invoice/item', 'InvoiceController@setItemById');
+$router->post('/invoice/item', 'InvoiceController@setNewItem');
 
-//item
-//search
+
+$router->put('/invoice/payment', 'InvoiceController@setPaymentConditionById');
+$router->post('/invoice/payment', 'InvoiceController@setNewPayment');
+
+
+// $router->put('/invoice/bank', 'InvoiceController@setBankDetailbyId');
+// $router->put('/invoice/contact', 'InvoiceController@setContactInfoById');

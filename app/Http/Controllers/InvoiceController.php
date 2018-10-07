@@ -11,6 +11,10 @@ use App\Service\Invoice\PrintInvoiceService;
 use App\Invoice;
 use App\Bank_detail;
 use App\User;
+use App\Receiver;
+use App\Item;
+use App\Payment_condition;
+use App\Contact_info;
 
 class InvoiceController extends Controller
 {
@@ -25,6 +29,15 @@ class InvoiceController extends Controller
     }
 
     private $userId = 3;
+
+    public function index()
+    {
+        $user = User::find($this->userId);
+
+        $invoices = $user->Invoice()->get();
+        return $invoices;
+    }
+ 
     
     /**
      * Returns a pdf invoice based on fields in the request body
@@ -160,13 +173,17 @@ class InvoiceController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
+     * Creates a draft of an Invoice
      * @return \Illuminate\Http\Response
      */
     public function create()
     {
-        //
+        $invoice = new Invoice();
+        $invoice->draft = 1;
+        $user = User::find($this->userId);
+        if ($user->Invoice()->save($invoice)) {
+            return $invoice;
+        }
     }
 
     /**
@@ -211,10 +228,105 @@ class InvoiceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function setReceiverById(Request $request)
+    {
+        $this->validate($request, [
+            "receiver_id" => "required|integer",
+            "invoice_id" => "required|integer"
+        ]);
+
+        $user = User::find($this->userId);
+
+        $receiver = $user->Receiver()->where("external_id", $request->get("receiver_id"))->first();
+        
+        if ($receiver instanceof Receiver) {
+            $invoice = $user->Invoice()->where("number", $request->get("invoice_id"))->first();
+            if ($receiver->Invoice()->save($invoice)) {
+                return $invoice;
+            }
+        } else {
+            return "no found";
+        }
+    }
+
+    public function setNewReceiver(Request $request)
+    {
+    }
+
+
+    public function editDetails(Request $request)
     {
         //
     }
+
+    public function setItemById(Request $request)
+    {
+        $this->validate($request, [
+            "item_id" => "required|integer",
+            "invoice_id" => "required|integer"
+        ]);
+
+        $user = User::find($this->userId);
+
+        $item = $user->Item()->where("external_id", $request->get("item_id"))->first();
+        
+        if ($item instanceof Item) {
+            $invoice = $user->Invoice()->where("number", $request->get("invoice_id"))->first();
+            if ($invoice->Item()->save($item)) {
+                return $invoice;
+            }
+        } else {
+            return "no found";
+        }
+    }
+
+    public function setPaymentConditionById(Request $request)
+    {
+        $this->validate($request, [
+            "payment_id" => "required|integer",
+            "invoice_id" => "required|integer"
+        ]);
+
+        $user = User::find($this->userId);
+
+        $payment = $user->Payment_condition()->where("external_id", $request->get("payment_id"))->first();
+        
+        if ($payment instanceof Payment_condition) {
+            $invoice = $user->Invoice()->where("number", $request->get("invoice_id"))->first();
+            if ($payment->Invoice()->save($invoice)) {
+                return $invoice;
+            }
+        } else {
+            return "no found";
+        }
+    }
+
+    // public function setBankDetailById(Request $request)
+    // {
+    //     $this->validate($request, [
+    //         "bank_id" => "required|integer",
+    //         "invoice_id" => "required|integer"
+    //     ]);
+
+    //     $user = User::find($this->userId);
+
+    //     $bank = $user->Bank_detail()->where("external_id", $request->get("bank_id"))->first();
+        
+    //     if ($bank instanceof Bank_detail) {
+    //         $invoice = $user->Invoice()->where("number", $request->get("invoice_id"))->first();
+    //         if ($bank->Invoice()->save($invoice)) {
+    //             return $invoice;
+    //         }
+    //     } else {
+    //         return "no found";
+    //     }
+    // }
+
+    public function setContactInfo(Request $request)
+    {
+        //
+    }
+
 
     /**
      * Update the specified resource in storage.
