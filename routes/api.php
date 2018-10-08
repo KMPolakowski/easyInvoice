@@ -21,14 +21,14 @@ $router->patch('/invoice/finalize/{number}', 'InvoiceController@makeInvoice');
 
 $router->post('/invoice/create', 'InvoiceController@create');
 
-$router->put('/invoice/receiver', 'InvoiceController@setReceiverById');
+$router->patch('/invoice/receiver', 'InvoiceController@setReceiverById');
 $router->post('/invoice/receiver', 'InvoiceController@setNewReceiver');
 
-$router->put('/invoice/item', 'InvoiceController@setItemById');
+$router->patch('/invoice/item', 'InvoiceController@setItemById');
 $router->post('/invoice/item', 'InvoiceController@setNewItem');
 
 
-$router->put('/invoice/payment', 'InvoiceController@setPaymentConditionById');
+$router->patch('/invoice/payment', 'InvoiceController@setPaymentConditionById');
 $router->post('/invoice/payment', 'InvoiceController@setNewPayment');
 
 

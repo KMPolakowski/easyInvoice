@@ -251,6 +251,53 @@ class InvoiceController extends Controller
 
     public function setNewReceiver(Request $request)
     {
+        $this->validate($request, [
+            "receiver.name" => "required|string|max:255",
+            "receiver.street" => "required|string|max:128",
+            "receiver.house_number" => "required|string|max:12",
+            "receiver.zip_code" => "required|string|max:64",
+            "receiver.vat_number" => "string|max:14",
+            "invoice_id" => "required|integer"
+        ]);
+
+        $user = User::find($this->userId);
+        $invoice = $user->Invoice()->where("number", $request->get("invoice_id"))->first();
+        
+        if ($invoice->Receiver instanceof Receiver) {
+            $receiver = Receiver::find($invoice->Receiver->id);
+            if ($receiver->Invoice()->count() > 1) {
+                $receiver = new Receiver();
+                $receiver->name = $request->input("receiver.name");
+                $receiver->street = $request->input("receiver.street");
+                $receiver->house_number = $request->input("receiver.house_number");
+                $receiver->zip_code = $request->input("receiver.zip_code");
+                $receiver->vat_number = $request->input("receiver.vat_number");
+    
+                if ($user->Receiver->save($receiver) &&  $receiver->Invoice()->save($invoice)) {
+                    return $receiver;
+                }
+            } else {
+                $receiver->name = $request->input("receiver.name");
+                $receiver->street = $request->input("receiver.street");
+                $receiver->house_number = $request->input("receiver.house_number");
+                $receiver->zip_code = $request->input("receiver.zip_code");
+                $receiver->vat_number = $request->input("receiver.vat_number");
+                if ($receiver->save()) {
+                    return $receiver;
+                }
+            }
+        } else {
+            $receiver = new Receiver();
+            $receiver->name = $request->input("receiver.name");
+            $receiver->street = $request->input("receiver.street");
+            $receiver->house_number = $request->input("receiver.house_number");
+            $receiver->zip_code = $request->input("receiver.zip_code");
+            $receiver->vat_number = $request->input("receiver.vat_number");
+
+            if ($user->Receiver->save($receiver) &&  $receiver->Invoice()->save($invoice)) {
+                return $receiver;
+            }
+        }
     }
 
 
@@ -259,7 +306,7 @@ class InvoiceController extends Controller
         //
     }
 
-    public function setItemById(Request $request)
+    public function addItemById(Request $request)
     {
         $this->validate($request, [
             "item_id" => "required|integer",
@@ -278,6 +325,10 @@ class InvoiceController extends Controller
         } else {
             return "no found";
         }
+    }
+
+    public function replaceItemById()
+    {
     }
 
     public function setPaymentConditionById(Request $request)
