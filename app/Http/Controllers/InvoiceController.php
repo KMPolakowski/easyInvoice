@@ -263,8 +263,13 @@ class InvoiceController extends Controller
         $user = User::find($this->userId);
         $invoice = $user->Invoice()->where("number", $request->get("invoice_id"))->first();
         
+        //Check if invoice has a receiver
         if ($invoice->Receiver instanceof Receiver) {
             $receiver = Receiver::find($invoice->Receiver->id);
+
+            //If the receiver has more invoices than this one, create a new receiver and attach him the invoice
+            // return $receiver->Invoice()->count() . " " . $receiver;
+
             if ($receiver->Invoice()->count() > 1) {
                 $receiver = new Receiver();
                 $receiver->name = $request->input("receiver.name");
@@ -273,7 +278,7 @@ class InvoiceController extends Controller
                 $receiver->zip_code = $request->input("receiver.zip_code");
                 $receiver->vat_number = $request->input("receiver.vat_number");
     
-                if ($user->Receiver->save($receiver) &&  $receiver->Invoice()->save($invoice)) {
+                if ($user->Receiver()->save($receiver) &&  $receiver->Invoice()->save($invoice)) {
                     return $receiver;
                 }
             } else {
@@ -286,6 +291,8 @@ class InvoiceController extends Controller
                     return $receiver;
                 }
             }
+
+            //If it doesn't, create a new receiver and attach him to the invoice
         } else {
             $receiver = new Receiver();
             $receiver->name = $request->input("receiver.name");
@@ -327,8 +334,63 @@ class InvoiceController extends Controller
         }
     }
 
-    public function replaceItemById()
+    public function addNewItem(Request $request)
     {
+        $this->validate($request, [
+            "items.*.pos_num" => "required|integer",
+            "items.*.descr" => "required|string",
+            "items.*.quantity" => "required|numeric",
+            "items.*.me" => "required|string|max:3",
+            "items.*.price" => "required|numeric",
+            "items.*.amount" => "required|numeric",
+            "invoice_id" => "required|integer",
+            "item_id" => "integer"
+        ]);
+
+        $user = User::find($this->userId);
+        $invoice = $user->Invoice()->where("number", $request->get("invoice_id"))->first();
+        
+
+        //Check if i
+        if ($request->has("item_id")) {
+            $item = Item::find()->where(["external_id", $request->get("item_id")])
+
+            //If the receiver has more invoices than this one, create a new receiver and attach him the invoice
+            // return $receiver->Invoice()->count() . " " . $receiver;
+
+            //TO DO: SET NEW ITEM FUNCTION
+
+
+            // if ($item->Invoice()->count() > 1) {
+            //     $item = new Item();
+            //     $item->poss
+            //     if ($user->Receiver()->save($receiver) &&  $receiver->Invoice()->save($invoice)) {
+            //         return $receiver;
+            //     }
+            // } else {
+            //     $receiver->name = $request->input("receiver.name");
+            //     $receiver->street = $request->input("receiver.street");
+            //     $receiver->house_number = $request->input("receiver.house_number");
+            //     $receiver->zip_code = $request->input("receiver.zip_code");
+            //     $receiver->vat_number = $request->input("receiver.vat_number");
+            //     if ($receiver->save()) {
+            //         return $receiver;
+            //     }
+            // }
+
+            //If it doesn't, create a new receiver and attach him to the invoice
+        } else {
+            $receiver = new Receiver();
+            $receiver->name = $request->input("receiver.name");
+            $receiver->street = $request->input("receiver.street");
+            $receiver->house_number = $request->input("receiver.house_number");
+            $receiver->zip_code = $request->input("receiver.zip_code");
+            $receiver->vat_number = $request->input("receiver.vat_number");
+
+            if ($user->Receiver->save($receiver) &&  $receiver->Invoice()->save($invoice)) {
+                return $receiver;
+            }
+        }
     }
 
     public function setPaymentConditionById(Request $request)
