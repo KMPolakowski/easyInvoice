@@ -321,75 +321,93 @@ class InvoiceController extends Controller
         ]);
 
         $user = User::find($this->userId);
-
+        
+        $invoice = $user->Invoice()->where("number", $request->get("invoice_id"))->first();
         $item = $user->Item()->where("external_id", $request->get("item_id"))->first();
         
-        if ($item instanceof Item) {
-            $invoice = $user->Invoice()->where("number", $request->get("invoice_id"))->first();
-            if ($invoice->Item()->save($item)) {
-                return $invoice;
+        if ($invoice instanceof Invoice) {
+            if ($item instanceof Item) {
+                $invoice = $user->Invoice()->where("number", $request->get("invoice_id"))->first();
+                if ($invoice->Item()->save($item)) {
+                    return $item;
+                }
+            } else {
+                return "nix item";
             }
         } else {
-            return "no found";
+            return "nix invoice found";
         }
     }
 
     public function addNewItem(Request $request)
     {
         $this->validate($request, [
-            "items.*.pos_num" => "required|integer",
-            "items.*.descr" => "required|string",
-            "items.*.quantity" => "required|numeric",
-            "items.*.me" => "required|string|max:3",
-            "items.*.price" => "required|numeric",
-            "items.*.amount" => "required|numeric",
-            "invoice_id" => "required|integer",
-            "item_id" => "integer"
+            "item.descr" => "required|string",
+            "item.quantity" => "required|numeric",
+            "item.me" => "required|string|max:3",
+            "item.price" => "required|numeric",
+            "item.amount" => "required|numeric",
+            "invoice_id" => "required|integer"
         ]);
 
         $user = User::find($this->userId);
-        $invoice = $user->Invoice()->where("number", $request->get("invoice_id"))->first();
+        $invoice = $user->Invoice()->where("number", $request->input("invoice_id"))->first();
         
+        if ($invoice instanceof Invoice) {
+            $item = new Item();
+            $highestPos = $invoice->Item()->max("pos_num") ?? 0;
+            $item->pos_num = $highestPos+1;
+            $item->descr = $request->input("item.descr");
+            $item->quantity = $request->input("item.quantity");
+            $item->me = $request->input("item.me");
+            $item->price = $request->input("item.price");
+            $item->amount = $request->input("item.amount");
 
-        //Check if i
-        if ($request->has("item_id")) {
-            $item = Item::find()->where(["external_id", $request->get("item_id")])
-
-            //If the receiver has more invoices than this one, create a new receiver and attach him the invoice
-            // return $receiver->Invoice()->count() . " " . $receiver;
-
-            //TO DO: SET NEW ITEM FUNCTION
-
-
-            // if ($item->Invoice()->count() > 1) {
-            //     $item = new Item();
-            //     $item->poss
-            //     if ($user->Receiver()->save($receiver) &&  $receiver->Invoice()->save($invoice)) {
-            //         return $receiver;
-            //     }
-            // } else {
-            //     $receiver->name = $request->input("receiver.name");
-            //     $receiver->street = $request->input("receiver.street");
-            //     $receiver->house_number = $request->input("receiver.house_number");
-            //     $receiver->zip_code = $request->input("receiver.zip_code");
-            //     $receiver->vat_number = $request->input("receiver.vat_number");
-            //     if ($receiver->save()) {
-            //         return $receiver;
-            //     }
-            // }
-
-            //If it doesn't, create a new receiver and attach him to the invoice
-        } else {
-            $receiver = new Receiver();
-            $receiver->name = $request->input("receiver.name");
-            $receiver->street = $request->input("receiver.street");
-            $receiver->house_number = $request->input("receiver.house_number");
-            $receiver->zip_code = $request->input("receiver.zip_code");
-            $receiver->vat_number = $request->input("receiver.vat_number");
-
-            if ($user->Receiver->save($receiver) &&  $receiver->Invoice()->save($invoice)) {
-                return $receiver;
+            if ($user->Item()->save($item) && $invoice->Item()->save($item)) {
+                return $item;
+            } else {
+                return "nix save";
             }
+        } else {
+            return "nix invoice";
+        }
+    }
+
+
+    public function editItem(Request $request)
+    {
+        $this->validate($request, [
+            "item.pos_num" => "required|integer",
+            "item.descr" => "required|string",
+            "item.quantity" => "required|numeric",
+            "item.me" => "required|string|max:3",
+            "item.price" => "required|numeric",
+            "item.amount" => "required|numeric",
+            "invoice_id" => "required|integer"
+        ]);
+
+        $user = User::find($this->userId);
+        $invoice = $user->Invoice()->where("number", $request->input("invoice_id"))->first();
+        
+        if ($invoice instanceof Invoice) {
+            $item = $invoice->Item()->where("pos_num", $request->input("item.pos_num"))->first();
+            if ($item instanceof Item) {
+                $item->descr = $request->input("item.descr");
+                $item->quantity = $request->input("item.quantity");
+                $item->me = $request->input("item.me");
+                $item->price = $request->input("item.price");
+                $item->amount = $request->input("item.amount");
+                if ($item->save()) {
+                    $invoice->load("item");
+                    return $invoice;
+                } else {
+                    return "nix save";
+                }
+            } else {
+                return "nix item";
+            }
+        } else {
+            return "nix invoice";
         }
     }
 

@@ -12,7 +12,7 @@ class item extends Model
 
     public function Invoice()
     {
-        return $this->belongsTo('App\Invoice');
+        return $this->belongsToMany('App\Invoice')->withTimestamps();
     }
 
     public function User()

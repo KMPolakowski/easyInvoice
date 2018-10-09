@@ -41,7 +41,7 @@ class AddExternalIdToTables extends Migration
 
         foreach ($tables as $table) {
             if ($table->Tables_in_easyinvoice !== "user" && $table->Tables_in_easyinvoice !== "invoice") {
-                \DB::statement("DROP TRIGGER ".$table->Tables_in_easyinvoice."_external_id");
+                \DB::unprepared("DROP TRIGGER ".$table->Tables_in_easyinvoice."_external_id");
 
                 Schema::table($table->Tables_in_easyinvoice, function (Blueprint $table) {
                     $table->dropColumn("external_id");

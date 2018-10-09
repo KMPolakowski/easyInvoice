@@ -47,7 +47,7 @@ class AddUserIdToTables extends Migration
         foreach ($tables as $table) {
             if ($table->Tables_in_easyinvoice !== "user") {
                 if ($table->Tables_in_easyinvoice == "invoice") {
-                    \DB::statement("DROP TRIGGER invoice_number");
+                    \DB::unprepared("DROP TRIGGER invoice_number");
                 }
                 Schema::table($table->Tables_in_easyinvoice, function (Blueprint $table) {
                     $table->dropColumn("user_id");

@@ -25,7 +25,7 @@ class Invoice extends Model
 
     public function Item()
     {
-        return $this->hasMany('App\Item');
+        return $this->belongsToMany('App\Item')->withTimestamps();
     }
 
     public function Payment_condition()
