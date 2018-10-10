@@ -373,7 +373,6 @@ class InvoiceController extends Controller
         }
     }
 
-
     public function editItem(Request $request)
     {
         $this->validate($request, [
@@ -392,12 +391,21 @@ class InvoiceController extends Controller
         if ($invoice instanceof Invoice) {
             $item = $invoice->Item()->where("pos_num", $request->input("item.pos_num"))->first();
             if ($item instanceof Item) {
+                if ($item->Invoice()->count() > 1) {
+                    $item = new Item();
+                }
                 $item->descr = $request->input("item.descr");
                 $item->quantity = $request->input("item.quantity");
                 $item->me = $request->input("item.me");
                 $item->price = $request->input("item.price");
                 $item->amount = $request->input("item.amount");
-                if ($item->save()) {
+                if ($item->Invoice()->count() > 1) {
+                    if ($user->save($item) && $invoice->save($item)) {
+                        return $invoice;
+                    } else {
+                        return "nix save";
+                    }
+                } elseif ($item->save()) {
                     $invoice->load("item");
                     return $invoice;
                 } else {
