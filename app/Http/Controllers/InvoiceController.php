@@ -391,7 +391,10 @@ class InvoiceController extends Controller
         if ($invoice instanceof Invoice) {
             $item = $invoice->Item()->where("pos_num", $request->input("item.pos_num"))->first();
             if ($item instanceof Item) {
-                if ($item->Invoice()->count() > 1) {
+                $itemHasMoreInvoices = $item->Invoice()->count() > 1;
+
+                if ($itemHasMoreInvoices) {
+                    $invoice->Item()->detach($item->id);
                     $item = new Item();
                 }
                 $item->descr = $request->input("item.descr");
@@ -399,8 +402,8 @@ class InvoiceController extends Controller
                 $item->me = $request->input("item.me");
                 $item->price = $request->input("item.price");
                 $item->amount = $request->input("item.amount");
-                if ($item->Invoice()->count() > 1) {
-                    if ($user->save($item) && $invoice->save($item)) {
+                if ($itemHasMoreInvoices) {
+                    if ($user->Item()->save($item) && $invoice->Item()->save($item)) {
                         return $invoice;
                     } else {
                         return "nix save";
