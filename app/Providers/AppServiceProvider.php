@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
+use App\User;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -13,6 +15,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->singleton(User::class, function ($app) {
+            $user = User::find(7);
+
+            return $user;
+        });
     }
 }

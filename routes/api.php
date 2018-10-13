@@ -28,6 +28,7 @@ $router->post('/invoice/receiver', 'InvoiceController@setNewReceiver');
 $router->patch('/invoice/{invoiceId}/item/{itemId}', 'InvoiceController@addItemById');
 $router->post('/invoice/{invoiceId}/item', 'InvoiceController@addNewItem');
 $router->post('/invoice/{invoiceId}/item/{itemId}/edit', 'InvoiceController@editItem');
+$router->patch('/invoice/{invoiceId}/item', 'InvoiceController@seatItem');
 
 
 $router->patch('/invoice/payment', 'InvoiceController@setPaymentConditionById');

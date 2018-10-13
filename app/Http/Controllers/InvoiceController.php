@@ -32,7 +32,7 @@ class InvoiceController extends Controller
 
     public function getInvoices()
     {
-        $user = User::find($this->userId);
+        $user = $this->getUser();
 
         $invoices = $user->Invoice()->get();
         return $invoices;
@@ -47,7 +47,7 @@ class InvoiceController extends Controller
         ]);
 
 
-        $user = User::find($this->userId);
+        $user = $this->getUser();
 
         $invoice = $user->Invoice()->where("number", $id)->first();
 
@@ -120,7 +120,7 @@ class InvoiceController extends Controller
             "number" => "required|integer"
         ]);
         
-        $user = User::find($this->userId);
+        $user = $this->getUser();
         
 
         $invoice = $user->Invoice()->where("number", $number)->firstOrFail();
@@ -147,7 +147,7 @@ class InvoiceController extends Controller
             "number" => "required|integer"
         ]);
         
-        $user = User::find($this->userId);
+        $user = $this->getUser();
         
 
         $invoice = $user->Invoice()->where("number", $number)->firstOrFail();
@@ -176,7 +176,7 @@ class InvoiceController extends Controller
             "number" => "required|integer"
         ]);
         
-        $user = User::find($this->userId);
+        $user = $this->getUser();
         
 
         $invoice = $user->Invoice()->where("number", $number)->firstOrFail();
@@ -202,7 +202,7 @@ class InvoiceController extends Controller
     {
         $invoice = new Invoice();
         $invoice->draft = 1;
-        $user = User::find($this->userId);
+        $user = $this->getUser();
         if ($user->Invoice()->save($invoice)) {
             return $invoice;
         }
@@ -257,7 +257,7 @@ class InvoiceController extends Controller
             "invoice_id" => "required|integer"
         ]);
 
-        $user = User::find($this->userId);
+        $user = $this->getUser();
 
         $receiver = $user->Receiver()->where("external_id", $request->get("receiver_id"))->first();
         
@@ -278,11 +278,11 @@ class InvoiceController extends Controller
             "receiver.street" => "required|string|max:128",
             "receiver.house_number" => "required|string|max:12",
             "receiver.zip_code" => "required|string|max:64",
-            "receiver.vat_number" => "string|max:14",
+            "receiver.ghvat_number" => "string|max:14",
             "invoice_id" => "required|integer"
         ]);
 
-        $user = User::find($this->userId);
+        $user = $this->getUser();
         $invoice = $user->Invoice()->where("number", $request->get("invoice_id"))->first();
         
         //Check if invoice has a receiver
@@ -345,7 +345,7 @@ class InvoiceController extends Controller
             "invoice_id" => "required|integer"
         ]);
 
-        $user = User::find($this->userId);
+        $user = $this->getUser();
         
         $invoice = $user->Invoice()->where("number", $request->get("invoice_id"))->first();
         $item = $user->Item()->where("external_id", $request->get("item_id"))->first();
@@ -377,7 +377,7 @@ class InvoiceController extends Controller
             "invoice_id" => "required|integer"
         ]);
 
-        $user = User::find($this->userId);
+        $user = $this->getUser();
         $invoice = $user->Invoice()->where("number", $request->input("invoice_id"))->first();
         
         if ($invoice instanceof Invoice) {
@@ -415,7 +415,7 @@ class InvoiceController extends Controller
             "pos_num" => "required|integer"
         ]);
 
-        $user = User::find($this->userId);
+        $user = $this->getUser();
         $invoice = $user->Invoice()->where("number", $request->input("invoice_id"))->first();
         
         if ($invoice instanceof Invoice) {
@@ -455,18 +455,39 @@ class InvoiceController extends Controller
         }
     }
 
-    public function seatItem(Request $request, $invoiceId, $itemId)
+    public function seatItem(Request $request, $invoiceId)
     {
-        $request["item_id"] = $itemId;
         $request["invoice_id"] = $invoiceId;
 
         $this->validate($request, [
             "target_position" => "required|integer",
-            "item_id" => "required|integer",
-            "invoice_id" => "required|integer"
+            "invoice_id" => "required|integer",
+            "item_id" => "required|integer"
         ]);
 
-        $invoice = $
+        $item_id = $request->input("item_id");
+
+        $invoice = $this->getUser()->Invoice()->where("number", $invoiceId)->first();
+        
+        if (is_null($invoice)) {
+            return "nix invoice";
+        }
+
+        $invoice->load(["item" => function ($q) use ($item_id) {
+            $q->where("pos_num", $item_id);
+        }]);
+
+        if (is_null($invoice->item)) {
+            return "nix item";
+        }
+
+        $target = $request->input("target_position");
+
+        $newItems = array_map($invoice->item, function ($item) use ($item_id, $target) {
+            if()
+        });
+
+        return $invoice;
     }
 
     public function setPaymentConditionById(Request $request)
@@ -476,7 +497,7 @@ class InvoiceController extends Controller
             "invoice_id" => "required|integer"
         ]);
 
-        $user = User::find($this->userId);
+        $user = $this->getUser();
 
         $payment = $user->Payment_condition()->where("external_id", $request->get("payment_id"))->first();
         
