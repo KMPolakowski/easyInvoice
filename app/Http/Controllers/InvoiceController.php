@@ -30,12 +30,34 @@ class InvoiceController extends Controller
 
     private $userId = 3;
 
-    public function index()
+    public function getInvoices()
     {
         $user = User::find($this->userId);
 
         $invoices = $user->Invoice()->get();
         return $invoices;
+    }
+
+    public function getInvoice(Request $request, $id)
+    {
+        $request["id"] = $id;
+        
+        $this->validate($request, [
+            "id" => "required|integer"
+        ]);
+
+
+        $user = User::find($this->userId);
+
+        $invoice = $user->Invoice()->where("number", $id)->first();
+
+        if (is_null($invoice)) {
+            return "nix invoice";
+        }
+
+        $invoice->load("receiver", "item", "payment_condition", "bank_detail", "contact_info");
+
+        return $invoice;
     }
  
     
@@ -313,8 +335,11 @@ class InvoiceController extends Controller
         //
     }
 
-    public function addItemById(Request $request)
+    public function addItemById(Request $request, $invoiceId, $itemId)
     {
+        $request["invoice_id"] = $invoiceId;
+        $request["item_id"] = $itemId;
+
         $this->validate($request, [
             "item_id" => "required|integer",
             "invoice_id" => "required|integer"
@@ -339,8 +364,10 @@ class InvoiceController extends Controller
         }
     }
 
-    public function addNewItem(Request $request)
+    public function addNewItem(Request $request, $invoiceId)
     {
+        $request["invoice_id"] = $invoiceId;
+
         $this->validate($request, [
             "item.descr" => "required|string",
             "item.quantity" => "required|numeric",
@@ -373,30 +400,35 @@ class InvoiceController extends Controller
         }
     }
 
-    public function editItem(Request $request)
+    public function editItem(Request $request, $invoiceId, $itemId)
     {
+        $request["invoice_id"] = $invoiceId;
+        $request["pos_num"] = $itemId;
+
         $this->validate($request, [
-            "item.pos_num" => "required|integer",
             "item.descr" => "required|string",
             "item.quantity" => "required|numeric",
             "item.me" => "required|string|max:3",
             "item.price" => "required|numeric",
             "item.amount" => "required|numeric",
-            "invoice_id" => "required|integer"
+            "invoice_id" => "required|integer",
+            "pos_num" => "required|integer"
         ]);
 
         $user = User::find($this->userId);
         $invoice = $user->Invoice()->where("number", $request->input("invoice_id"))->first();
         
         if ($invoice instanceof Invoice) {
-            $item = $invoice->Item()->where("pos_num", $request->input("item.pos_num"))->first();
+            $item = $invoice->Item()->where("pos_num", $request->input("pos_num"))->first();
             if ($item instanceof Item) {
                 $itemHasMoreInvoices = $item->Invoice()->count() > 1;
+                $pos_num = $item->pos_num;
 
                 if ($itemHasMoreInvoices) {
                     $invoice->Item()->detach($item->id);
                     $item = new Item();
                 }
+                $item->pos_num = $pos_num;
                 $item->descr = $request->input("item.descr");
                 $item->quantity = $request->input("item.quantity");
                 $item->me = $request->input("item.me");
@@ -404,6 +436,7 @@ class InvoiceController extends Controller
                 $item->amount = $request->input("item.amount");
                 if ($itemHasMoreInvoices) {
                     if ($user->Item()->save($item) && $invoice->Item()->save($item)) {
+                        $invoice->load("item");
                         return $invoice;
                     } else {
                         return "nix save";
@@ -420,6 +453,20 @@ class InvoiceController extends Controller
         } else {
             return "nix invoice";
         }
+    }
+
+    public function seatItem(Request $request, $invoiceId, $itemId)
+    {
+        $request["item_id"] = $itemId;
+        $request["invoice_id"] = $invoiceId;
+
+        $this->validate($request, [
+            "target_position" => "required|integer",
+            "item_id" => "required|integer",
+            "invoice_id" => "required|integer"
+        ]);
+
+        $invoice = $
     }
 
     public function setPaymentConditionById(Request $request)

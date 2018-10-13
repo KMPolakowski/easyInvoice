@@ -11,7 +11,8 @@
 |
 */
 
-$router->get('/invoices', 'InvoiceController@index');
+$router->get('/invoices', 'InvoiceController@getInvoices');
+$router->get('/invoice/{id}', 'InvoiceController@getInvoice');
 
 $router->post('/invoice/print', 'InvoiceController@printNew');
 $router->get('/invoice/print/{number}', 'InvoiceController@printExisting');
@@ -24,9 +25,9 @@ $router->post('/invoice/create', 'InvoiceController@create');
 $router->patch('/invoice/receiver', 'InvoiceController@setReceiverById');
 $router->post('/invoice/receiver', 'InvoiceController@setNewReceiver');
 
-$router->patch('/invoice/item', 'InvoiceController@addItemById');
-$router->post('/invoice/item', 'InvoiceController@addNewItem');
-$router->post('/invoice/item/edit', 'InvoiceController@editItem');
+$router->patch('/invoice/{invoiceId}/item/{itemId}', 'InvoiceController@addItemById');
+$router->post('/invoice/{invoiceId}/item', 'InvoiceController@addNewItem');
+$router->post('/invoice/{invoiceId}/item/{itemId}/edit', 'InvoiceController@editItem');
 
 
 $router->patch('/invoice/payment', 'InvoiceController@setPaymentConditionById');
