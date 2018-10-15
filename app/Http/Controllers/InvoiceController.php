@@ -455,6 +455,7 @@ class InvoiceController extends Controller
         }
     }
 
+
     public function seatItem(Request $request, $invoiceId)
     {
         $request["invoice_id"] = $invoiceId;
@@ -466,28 +467,40 @@ class InvoiceController extends Controller
         ]);
 
         $item_id = $request->input("item_id");
+        $target = $request->input("target_position");
 
         $invoice = $this->getUser()->Invoice()->where("number", $invoiceId)->first();
         
         if (is_null($invoice)) {
             return "nix invoice";
         }
+        
+        // $targetId = $invoice->Item()->where("external_id", $target)->first();
+        $actualItemId = $invoice->Item()->where("pos_num", $item_id)->select("external_id")->first()->external_id;
 
-        $invoice->load(["item" => function ($q) use ($item_id) {
-            $q->where("pos_num", $item_id);
-        }]);
 
-        if (is_null($invoice->item)) {
-            return "nix item";
+        $condition = $item_id > $target;
+
+        foreach ($invoice->Item()->get() as $item) {
+            if ($condition) {
+                if ($item["pos_num"] >= $target && $item["pos_num"] < $item_id) {
+                    $item = $invoice->Item()->where("pos_num", $item->pos_num)->first();
+                    $item->pos_num++;
+                    $item->save();
+                }
+            } elseif ($item["pos_num"] <= $target && $item["pos_num"] > $item_id) {
+                $item = $invoice->Item()->where("pos_num", $item->pos_num)->first();
+                $item->pos_num--;
+                $item->save();
+            }
         }
+    
 
-        $target = $request->input("target_position");
+        $actualItem = $invoice->Item()->where("external_id", $actualItemId)->first();
+        $actualItem->pos_num = $target;
+        $actualItem->save();
 
-        $newItems = array_map($invoice->item, function ($item) use ($item_id, $target) {
-            if()
-        });
-
-        return $invoice;
+        return $invoice->Item()->get();
     }
 
     public function setPaymentConditionById(Request $request)
