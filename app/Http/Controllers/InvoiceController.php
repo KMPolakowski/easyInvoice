@@ -15,6 +15,7 @@ use App\Receiver;
 use App\Item;
 use App\Payment_condition;
 use App\Contact_info;
+use Symfony\Component\HttpFoundation\Response;
 
 class InvoiceController extends Controller
 {
@@ -35,7 +36,7 @@ class InvoiceController extends Controller
         $user = $this->getUser();
 
         $invoices = $user->Invoice()->get();
-        return $invoices;
+        return response()->json(["data" => [$invoices]]);
     }
 
     public function getInvoice(Request $request, $id)
@@ -204,7 +205,7 @@ class InvoiceController extends Controller
         $invoice->draft = 1;
         $user = $this->getUser();
         if ($user->Invoice()->save($invoice)) {
-            return $invoice;
+            return response($invoice, 200);
         }
     }
 
