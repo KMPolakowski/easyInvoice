@@ -24,8 +24,7 @@ class InvoiceSeeder extends Seeder
     public function run()
     {
         $mes = ["lfm", "m", "m²", "pau", "pa"];
-
-
+    
         $this->faker = Faker\Factory::create('at_AT');
 
         for ($i1 = 0; $i1 < 20; $i1++) {
