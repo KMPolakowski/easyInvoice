@@ -30,8 +30,6 @@ class ItemObserver
             ]
         ];
 
-        // dump("c");
-        // dump($params);
         app(ClientBuilder::class)->index($params);
     }
 

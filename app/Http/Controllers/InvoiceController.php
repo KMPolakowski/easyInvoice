@@ -33,6 +33,7 @@ class InvoiceController extends Controller
 
     public function getInvoices()
     {
+<<<<<<< HEAD
         // $params = [
         //     'index' => 'item',
         //     'type' => "item",
@@ -57,6 +58,31 @@ class InvoiceController extends Controller
         $response = app(ClientBuilder::class)->search($params);
 
         return $response;
+=======
+        $params = [
+            "index" => "item"
+        ];
+
+        $response = app(ClientBuilder::class)->deleteByQuery($params);
+
+        return $response;
+
+        $params = [
+            'index' => 'item',
+            'type' => $this->getUser()->id,
+            'id' => 79
+            // 'body' => ['testField' => 'abc']
+        ];
+
+        $response = app(ClientBuilder::class)->get($params);
+
+        return $response;
+
+        // $user = $this->getUser();
+
+        // $invoices = $user->Invoice()->get();
+        // return response()->json(["data" => [$invoices]]);
+>>>>>>> df71c5c0e005e42d11f819c894c1b22610831784
     }
 
     public function getInvoice(Request $request, $id)
