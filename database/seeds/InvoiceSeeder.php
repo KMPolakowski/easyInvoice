@@ -24,8 +24,7 @@ class InvoiceSeeder extends Seeder
     public function run()
     {
         $mes = ["lfm", "m", "m²", "pau", "pa"];
-
-
+    
         $this->faker = Faker\Factory::create('at_AT');
 
         for ($i1 = 0; $i1 < 20; $i1++) {
@@ -92,9 +91,11 @@ class InvoiceSeeder extends Seeder
                     $item->me = $mes[$this->faker->numberBetween(0, 4)];
                     $item->amount = round($item->price * $item->quantity, 2);
                     $netto_sum += $item->amount;
+
                     $user->Item()->save($item);
                     $invoice->Item()->save($item);
                 }
+
 
                 $invoice->netto_sum = $netto_sum;
 

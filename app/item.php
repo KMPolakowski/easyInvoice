@@ -3,8 +3,9 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Observers\ItemObesrver;
 
-class item extends Model
+class Item extends Model
 {
     protected $table = 'item';
 

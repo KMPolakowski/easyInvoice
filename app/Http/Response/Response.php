@@ -7,5 +7,6 @@ class Response
 {
     public function __construct()
     {
+         return new JsonResponse(["data"], 200);
     }
 }

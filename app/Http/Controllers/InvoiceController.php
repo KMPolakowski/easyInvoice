@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 use App\Service\Invoice\PrintInvoiceService;
-
+use Elasticsearch\ClientBuilder;
 use App\Invoice;
 use App\Bank_detail;
 use App\User;
@@ -33,10 +33,30 @@ class InvoiceController extends Controller
 
     public function getInvoices()
     {
-        $user = $this->getUser();
+        // $params = [
+        //     'index' => 'item',
+        //     'type' => "item",
+        //     'id' => "1.2"
+        //     // 'body' => ['testField' => 'abc']
+        // ];
 
-        $invoices = $user->Invoice()->get();
-        return response()->json(["data" => [$invoices]]);
+        // $response = app(ClientBuilder::class)->get($params);
+
+        $params = [
+            'index' => 'item',
+            'type' => 'item',
+            'body' => [
+                'query' => [
+                    'match' => [
+                        "descr" => "psu.*"
+                    ]
+                ]
+            ]
+        ];
+
+        $response = app(ClientBuilder::class)->search($params);
+
+        return $response;
     }
 
     public function getInvoice(Request $request, $id)
