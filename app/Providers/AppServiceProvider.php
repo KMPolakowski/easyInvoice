@@ -5,7 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Elasticsearch\ClientBuilder;
 
-use App\Observers\ItemObserver;
+use App\Observers\InvoiceObserver;
 use App\User;
 use App\Item;
 use App\Invoice;
@@ -33,6 +33,6 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot()
     {
-        Item::observe(ItemObserver::class);
+        Invoice::observe(InvoiceObserver::class);
     }
 }

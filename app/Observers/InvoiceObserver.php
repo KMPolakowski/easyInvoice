@@ -42,14 +42,17 @@ class InvoiceObserver
     public function updated(Invoice $invoice)
     {
         if (!$invoice->draft) {
-            $items = $invoice->Item()->get();
+            $items = $invoice->Item();
             $receiver = $invoice->Receiver()->get();
             $payment = $invoice->Payment_condition()->get();
+            
+
+            dd($items);
 
             $params = [
             'index' => 'invoice',
             'type' => "invoice",
-            'id' => $item->user_id . "." . $item->external_id,
+            'id' => $invoice->user_id . "." . $invoice->number,
             'body' => [
                 'doc' => [
                     "date" => $invoice->date,
@@ -72,10 +75,15 @@ class InvoiceObserver
                         "me" => $items->me
                     ],
                     "receiver" => [
-
+                        "name" => $reciver->name,
+                        "street" => $receiver->street,
+                        "zip_code" => $receiver->zip_code,
+                        "house_number" => $receiver->house_number,
+                        "vat_number" => $receiver->vat_number
                     ],
                     "payment_condition" => [
-
+                        "days" => $payment->days,
+                        "has_skonto" => $payment->has_skonto
                     ]
                 ]
             ]
@@ -92,14 +100,14 @@ class InvoiceObserver
      * @return void
      */
 
-    public function deleted(Item $item)
+    public function deleted(Invoice $invoice)
     {
         $params = [
-            'index' => 'item',
-            'type' => "item",
-            'id' => $item->user_id . "." . $item->external_id,
+            "index" => "invoice",
+            "type" => "invoice",
+            "id" => $invoice->user_id . "." . $invoice->number,
         ];
 
-        $response = $client->delete($params);
+        app(ClientBuilder::class)->delete($params);
     }
 }

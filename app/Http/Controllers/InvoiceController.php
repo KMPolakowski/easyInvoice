@@ -33,9 +33,14 @@ class InvoiceController extends Controller
 
     public function getInvoices()
     {
-        $user = $this->getUser();
-        $invoices = $user->Invoice()->get();
-        return response()->json(["data" => [$invoices]]);
+        $email = "1amil.polakowski@bitpanda.com";
+
+        dd($email === "kamil.polakowski@bitpanda.com");
+
+        
+        // $user = $this->getUser();
+        // $invoices = $user->Invoice()->get();
+        // return response()->json(["data" => [$invoices]]);
     }
 
     public function getInvoice(Request $request, $id)
@@ -45,7 +50,7 @@ class InvoiceController extends Controller
         $this->validate($request, [
             "id" => "required|integer"
         ]);
-
+                                
 
         $user = $this->getUser();
 
@@ -256,7 +261,7 @@ class InvoiceController extends Controller
             "receiver_id" => "required|integer",
             "invoice_id" => "required|integer"
         ]);
-
+        
         $user = $this->getUser();
 
         $receiver = $user->Receiver()->where("external_id", $request->get("receiver_id"))->first();
