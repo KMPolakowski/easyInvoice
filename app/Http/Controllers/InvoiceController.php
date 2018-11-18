@@ -33,14 +33,9 @@ class InvoiceController extends Controller
 
     public function getInvoices()
     {
-        $email = "1amil.polakowski@bitpanda.com";
-
-        dd($email === "kamil.polakowski@bitpanda.com");
-
-        
-        // $user = $this->getUser();
-        // $invoices = $user->Invoice()->get();
-        // return response()->json(["data" => [$invoices]]);
+        $user = $this->getUser();
+        $invoices = $user->Invoice()->get();
+        return response()->json(["data" => [$invoices]]);
     }
 
     public function getInvoice(Request $request, $id)
@@ -328,7 +323,7 @@ class InvoiceController extends Controller
             $receiver->zip_code = $request->input("receiver.zip_code");
             $receiver->vat_number = $request->input("receiver.vat_number");
 
-            if ($user->Receiver->save($receiver) &&  $receiver->Invoice()->save($invoice)) {
+            if ($user->Receiver()->save($receiver) &&  $receiver->Invoice()->save($invoice)) {
                 return $receiver;
             }
         }

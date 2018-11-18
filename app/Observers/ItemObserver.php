@@ -22,18 +22,19 @@ class ItemObserver
         $params = [
             'index' => 'invoice',
             'type' => "invoice",
-            'id' => $item->user_id . "." . $item->external_id,
+            'id' => $item->user_id . "." . $item->Invoice->number,
             'body' => [
-                'doc' => [
-                    "item" => [
+                    "script" => "ctx_source.items.add(params.item)",
+                    "params" => [
+                        "item" => [
                         "pos_num" => $item->pos_num,
                         "descr" => $item->descr,
                         "quantity" => $item->quantity,
                         "price" => $item->price,
                         "amount" => $item->amount,
                         "me" => $item->me
+                        ]
                     ]
-                ]
             ]
         ];
 
@@ -51,7 +52,7 @@ class ItemObserver
         $params = [
             'index' => 'invoice',
             'type' => "invoice",
-            'id' => $item->user_id . "." . $item->external_id,
+            'id' => $item->user_id . "." . $item->invoice_id,
             'body' => [
                 'doc' => [
                     "item" => [

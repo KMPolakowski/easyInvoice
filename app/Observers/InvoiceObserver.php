@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Invoice;
+use App\Payment_condition;
 
 use Elasticsearch\ClientBuilder;
 
@@ -41,56 +42,60 @@ class InvoiceObserver
      */
     public function updated(Invoice $invoice)
     {
-        if (!$invoice->draft) {
-            $items = $invoice->Item();
-            $receiver = $invoice->Receiver()->get();
-            $payment = $invoice->Payment_condition()->get();
+        if ($invoice->Receiver) {
+            $receiver = $invoice->Receiver;
+            $doc["receiver"]["name"] = $receiver->name;
+            $doc["receiver"]["street"] = $receiver->street;
+            $doc["receiver"]["zip_code"] = $receiver->zip_code;
+            $doc["receiver"]["house_number"] = $receiver->house_number;
+            $doc["receiver"]["vat_number"] = $receiver->vat_number;
+        }
+        
+        if ($invoice->Issuer) {
+            $issuer = $invoice->Issuer;
+            $doc["issuer"]["name"] = $issuer->name;
+            $doc["issuer"]["street"] = $issuer->street;
+            $doc["issuer"]["zip_code"] = $issuer->zip_code;
+            $doc["issuer"]["house_number"] = $issuer->house_number;
+            $doc["issuer"]["vat_number"] = $issuer->vat_number;
+        }
+
+        if ($invoice->Payment_condition) {
+            $payment = $invoice->Payment_condition;
+            $doc["payment"]["days"] = $payment->days;
+            $doc["payment"]["has_skonto"] = $payment->has_skonto;
+            $doc["payment"]["days_skonto"] = $payment->days_skonto;
+            $doc["payment"]["percent_skonto"] = $payment->percent_skonto;
+        }
+
+        if ($invoice->Contact_info) {
+            $contact = $invoice->Contact_info;
+            $doc["contact"]["tel"] = $contact->tel;
+            $doc["contact"]["email"] = $contact->email;
+            $doc["contact"]["web"] = $contact->web;
+        }
+        
+        $doc = array_merge($doc, ["date" => $invoice->date,
+        "number" => $invoice->number,
+        "topic" => $invoice->topic,
+        "street" => $invoice->street,
+        "house_number" => $invoice->house_number,
+        "zip_code" => $invoice->zip_code,
+        "netto_sum" => $invoice->netto_sum,
+        "vat_percentage" => $invoice->vat_percentage,
+        "vat_sum" => $invoice->vat_sum,
+        "brutto_sum" => $invoice->brutto_sum]);
             
-
-            dd($items);
-
-            $params = [
+        $params = [
             'index' => 'invoice',
             'type' => "invoice",
             'id' => $invoice->user_id . "." . $invoice->number,
             'body' => [
-                'doc' => [
-                    "date" => $invoice->date,
-                    "number" => $invoice->number,
-                    "topic" => $invoice->topic,
-                    "street" => $invoice->street,
-                    "house_number" => $invoice->house_number,
-                    "zip_code" => $invoice->zip_code,
-                    "netto_sum" => $invoice->netto_sum,
-                    "vat_percentage" => $invoice->vat_percentage,
-                    "vat_sum" => $invoice->vat_sum,
-                    "brutto_sum" => $invoice->brutto_sum,
-                    "info" => $invoice->info,
-                    "item" => [
-                        "pos_num" => $items->pos_num,
-                        "descr" => $items->descr,
-                        "quantity" => $items->quantity,
-                        "price" => $items->price,
-                        "amount" => $items->amount,
-                        "me" => $items->me
-                    ],
-                    "receiver" => [
-                        "name" => $reciver->name,
-                        "street" => $receiver->street,
-                        "zip_code" => $receiver->zip_code,
-                        "house_number" => $receiver->house_number,
-                        "vat_number" => $receiver->vat_number
-                    ],
-                    "payment_condition" => [
-                        "days" => $payment->days,
-                        "has_skonto" => $payment->has_skonto
-                    ]
-                ]
+                'doc' => $doc
             ]
         ];
 
-            app(ClientBuilder::class)->update($params);
-        }
+        app(ClientBuilder::class)->update($params);
     }
 
     /**

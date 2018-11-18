@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Elasticsearch\ClientBuilder;
 
 use App\Observers\InvoiceObserver;
+use App\Observes\ItemObserver;
 use App\User;
 use App\Item;
 use App\Invoice;
@@ -34,5 +35,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Invoice::observe(InvoiceObserver::class);
+        Item::observe(ItemObserver::class);
     }
 }
