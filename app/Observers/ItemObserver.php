@@ -5,6 +5,7 @@ namespace App\Observers;
 use App\Item;
 
 use Elasticsearch\ClientBuilder;
+use App\Invoice;
 
 class ItemObserver
 {
@@ -19,26 +20,21 @@ class ItemObserver
      */
     public function created(Item $item)
     {
-        $params = [
+        dump("c");
+        if (isset($item->user_id, $item->invoice_id)) {
+            $invoiceNumber = Invoice::find($item->invoice_id)->number;
+            $params = [
             'index' => 'invoice',
             'type' => "invoice",
-            'id' => $item->user_id . "." . $item->Invoice->number,
+            'id' => $item->user_id . "." . $invoiceNumber,
             'body' => [
-                    "script" => "ctx_source.items.add(params.item)",
-                    "params" => [
-                        "item" => [
-                        "pos_num" => $item->pos_num,
-                        "descr" => $item->descr,
-                        "quantity" => $item->quantity,
-                        "price" => $item->price,
-                        "amount" => $item->amount,
-                        "me" => $item->me
-                        ]
-                    ]
+                    "script" => "ctx._source.items.add(params)",
+                    "params" => "asd"
             ]
         ];
 
-        app(ClientBuilder::class)->update($params);
+            app(ClientBuilder::class)->update($params);
+        }
     }
 
     /**
@@ -49,25 +45,26 @@ class ItemObserver
      */
     public function updated(Item $item)
     {
+        dump("u");
         $params = [
             'index' => 'invoice',
             'type' => "invoice",
             'id' => $item->user_id . "." . $item->invoice_id,
             'body' => [
                 'doc' => [
-                    "item" => [
-                        "pos_num" => $item->pos_num,
-                        "descr" => $item->descr,
-                        "quantity" => $item->quantity,
-                        "price" => $item->price,
-                        "amount" => $item->amount,
-                        "me" => $item->me
-                    ]
+                    // "item" => [
+                    //     "pos_num" => $item->pos_num,
+                    //     "descr" => $item->descr,
+                    //     "quantity" => $item->quantity,
+                    //     "price" => $item->price,
+                    //     "amount" => $item->amount,
+                    //     "me" => $item->me
+                    // ]
                 ]
             ]
         ];
 
-        app(ClientBuilder::class)->update($params);
+        dd(app(ClientBuilder::class)->update($params));
     }
 
     /**

@@ -20,6 +20,8 @@ $router->get('/invoice/print/{number}', 'InvoiceController@printExisting');
 $router->patch('/invoice/draft/{number}', 'InvoiceController@makeDraft');
 $router->patch('/invoice/finalize/{number}', 'InvoiceController@makeInvoice');
 
+$router->put('/invoice/edit', 'InvoiceController@editDetails');
+
 $router->post('/invoice/create', 'InvoiceController@create');
 
 $router->patch('/invoice/receiver', 'InvoiceController@setReceiverById');

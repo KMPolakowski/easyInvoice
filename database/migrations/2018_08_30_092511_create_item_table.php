@@ -21,6 +21,7 @@ class CreateItemTable extends Migration
             $table->float('price');
             $table->float('amount');
             $table->string('me');
+            $table->unsignedInteger('invoice_id');
             $table->timestamps();
         });
     }

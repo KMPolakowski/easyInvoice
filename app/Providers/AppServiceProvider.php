@@ -6,7 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Elasticsearch\ClientBuilder;
 
 use App\Observers\InvoiceObserver;
-use App\Observes\ItemObserver;
+use App\Observers\ItemObserver;
 use App\User;
 use App\Item;
 use App\Invoice;

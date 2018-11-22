@@ -3,7 +3,6 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Observers\ItemObesrver;
 
 class Item extends Model
 {
@@ -13,7 +12,7 @@ class Item extends Model
 
     public function Invoice()
     {
-        return $this->belongsToMany('App\Invoice')->withTimestamps();
+        return $this->hasOne('App\Invoice');
     }
 
     public function User()

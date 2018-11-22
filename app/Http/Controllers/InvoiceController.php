@@ -16,6 +16,8 @@ use App\Item;
 use App\Payment_condition;
 use App\Contact_info;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Database\Seeder;
+use Faker\Factory;
 
 class InvoiceController extends Controller
 {
@@ -27,6 +29,8 @@ class InvoiceController extends Controller
     public function __construct()
     {
         // $this->PrintInvoiceService = new PrintInvoiceService();
+
+        $this->faker = Factory::create('at_AT');
     }
 
     private $userId = 3;
@@ -332,7 +336,38 @@ class InvoiceController extends Controller
 
     public function editDetails(Request $request)
     {
-        //
+        $this->validate($request, [
+            "invoice_id" => "required|integer",
+            // "date" => "required|date_format:d-m-Y",
+            // "number" => "required|numeric",
+            // "topic" => "required|string|max:64",
+            // "street" => "required|string|max:64",
+            // "house_number" => "required|numeric",
+            // "zip_code" => "required|string|max:64",
+            // "netto_sum" => "required|numeric",
+            // "vat_percentage" => "required|integer",
+            // "vat_sum" => "required|numeric",
+            // "brutto_sum" => "required|numeric",
+        ]);
+
+        $user = $this->getUser();
+        $invoice = $user->Invoice()->where("number", $request->get("invoice_id"))->first();
+
+        if ($invoice instanceof Invoice) {
+            $invoice->date = $this->faker->date;
+            // $invoice->number = $i2;
+            $invoice->topic = $this->faker->text($this->faker->numberBetween(8, 15));
+            $invoice->street = $this->faker->streetName;
+            $invoice->zip_code = $this->faker->postCode;
+            $invoice->house_number = $this->faker->buildingNumber;
+            $invoice->vat_percentage = $this->faker->numberBetween(15, 20);
+            $invoice->draft = 0;
+            $invoice->info = $this->faker->text($this->faker->numberBetween(35, 255));
+            $invoice->save();
+            return $invoice;
+        } else {
+            return "no found";
+        }
     }
 
     public function addItemById(Request $request, $invoiceId, $itemId)
@@ -389,8 +424,9 @@ class InvoiceController extends Controller
             $item->me = $request->input("item.me");
             $item->price = $request->input("item.price");
             $item->amount = $request->input("item.amount");
-
-            if ($user->Item()->save($item) && $invoice->Item()->save($item)) {
+            $item->invoice_id = $invoice->id;
+            
+            if ($user->Item()->save($item)) {
                 return $item;
             } else {
                 return "nix save";

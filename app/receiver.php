@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class receiver extends Model
+class Receiver extends Model
 {
     protected $table = 'receiver';
 

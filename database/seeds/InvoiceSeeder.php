@@ -91,9 +91,9 @@ class InvoiceSeeder extends Seeder
                     $item->me = $mes[$this->faker->numberBetween(0, 4)];
                     $item->amount = round($item->price * $item->quantity, 2);
                     $netto_sum += $item->amount;
+                    $item->invoice_id = $invoice->id;
 
                     $user->Item()->save($item);
-                    $invoice->Item()->save($item);
                 }
 
 
