@@ -20,51 +20,48 @@ class ItemObserver
      */
     public function created(Item $item)
     {
-        dump("c");
         if (isset($item->user_id, $item->invoice_id)) {
-            $invoiceNumber = Invoice::find($item->invoice_id)->number;
+            $invoice = Invoice::find($item->invoice_id)->first();
+            $items = Item::where(["invoice_id" => $invoice->id])->get()->toArray();
             $params = [
             'index' => 'invoice',
             'type' => "invoice",
-            'id' => $item->user_id . "." . $invoiceNumber,
+            "id" => $item->user_id . "." . $invoice->number,
             'body' => [
-                    "script" => "ctx._source.items.add(params)",
-                    "params" => "asd"
+                    "doc" => [
+                        "items" => $items
+                    ]
             ]
         ];
 
+            dump($params);
             app(ClientBuilder::class)->update($params);
         }
     }
 
     /**
-     * Handle the User "updated" event.
+     * Handle the User "updated" event
      *
      * @param  \App\User  $user
      * @return void
      */
     public function updated(Item $item)
     {
-        dump("u");
-        $params = [
+        if (isset($item->user_id, $item->invoice_id)) {
+            $invoice = Invoice::find($item->invoice_id)->first();
+            $items = Item::where(["invoice_id" => $invoice->id])->get()->toArray();
+            $params = [
             'index' => 'invoice',
             'type' => "invoice",
-            'id' => $item->user_id . "." . $item->invoice_id,
+            "id" => $item->user_id . "." . $invoice->number,
             'body' => [
-                'doc' => [
-                    // "item" => [
-                    //     "pos_num" => $item->pos_num,
-                    //     "descr" => $item->descr,
-                    //     "quantity" => $item->quantity,
-                    //     "price" => $item->price,
-                    //     "amount" => $item->amount,
-                    //     "me" => $item->me
-                    // ]
-                ]
+                    "doc" => [
+                        "items" => $items
+                    ]
             ]
         ];
-
-        dd(app(ClientBuilder::class)->update($params));
+            app(ClientBuilder::class)->update($params);
+        }
     }
 
     /**
@@ -76,12 +73,20 @@ class ItemObserver
 
     public function deleted(Item $item)
     {
-        $params = [
-            "index" => "invoice",
-            "type" => "invoice",
-            "id" => $invoice->user_id . "." . $invoice->number,
+        if (isset($item->user_id, $item->invoice_id)) {
+            $invoice = Invoice::find($item->invoice_id)->first();
+            $items = Item::where(["invoice_id" => $invoice->id])->get()->toArray();
+            $params = [
+            'index' => 'invoice',
+            'type' => "invoice",
+            "id" => $item->user_id . "." . $invoice->number,
+            'body' => [
+                    "doc" => [
+                        "items" => $items
+                    ]
+            ]
         ];
-
-        app(ClientBuilder::class)->delete($params);
+            app(ClientBuilder::class)->update($params);
+        }
     }
 }

@@ -23,8 +23,6 @@ class InvoiceObserver
      */
     public function created(Invoice $invoice)
     {
-        dump("c" . $invoice);
-
         $invoice = Invoice::find($invoice->id);
 
         $params = [
@@ -49,14 +47,10 @@ class InvoiceObserver
      */
     public function updated(Invoice $invoice)
     {
-        dump("u" . $invoice);
-
         $number = Invoice::find($invoice->id)->number;
 
         if ($invoice->receiver_id) {
-            dump($invoice->receiver_id);
             $receiver = Receiver::where(["id" => $invoice->receiver_id])->first();
-            dump($receiver);
             $doc["receiver"]["name"] = $receiver->name;
             $doc["receiver"]["street"] = $receiver->street;
             $doc["receiver"]["zip_code"] = $receiver->zip_code;
